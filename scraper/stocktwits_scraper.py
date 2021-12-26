@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from time import sleep
 from collections import deque
+import time
 
 class StockTwitsAPIScraper:
     def __init__(self, symbol, date, maxId):
@@ -86,26 +87,31 @@ class StockTwitsAPIScraper:
             print(response.text)        
         return True
 
-    def getTweetsAndWriteToFile(self):        
+    def getTweetsAndWriteToFile(self):     
+        start = time.time()   
         if not self.getMessages(self.getCurrentUrl()):
             return False
         self.writeJson()
         print("Scrap {} tweets starting from {}.".format(len(self.tweets), self.maxId))
         self.tweets.clear()
         sleep(self.requestInterval)
+        end = time.time()
+        print('time used: '+str(end-start))
         return True
 
     def scrapTweets(self):        
         try:
+            
             doScrap = True
             while doScrap:
                 doScrap = self.getTweetsAndWriteToFile()
         except Exception:
             print(traceback.format_exc())
 
-symbols = []
+symbols = ['AAPL']
 requestLimit = 200
-targetDate = 07012021
+targetDate = '07012021'
+maxId = 419652029
 
 for symbol in symbols:
     '''
